@@ -7,16 +7,18 @@ INCLUDE_DIRS =
 INCLUDE= $(foreach p, $(INCLUDE_DIRS), -Isrc/$p)
 INCLUDE += -Isrc/
 
-SRC = main.c loading_bar.c
+SRC = loading_bar.c
 
 OBJS = $(addprefix $(BUILD)/, $(addsuffix .o, $(basename $(SRC))))
 FOLDERS = $(sort $(addprefix $(BUILD)/, $(dir $(SRC))))
 
 BUILD = build
 
-.PHONY: loading_bar clean test
-all: loading_bar
-test: test
+.PHONY: loading_bar clean tests
+all: loading_bar_dynamic
+#static: loading_bar_static
+dynamic: loading_bar_dynamic
+tests: loading_bar_dynamic test
 
 debug: FLAGS += -DDEBUG
 debug: loading_bar
@@ -28,11 +30,14 @@ $(FOLDERS):
 	mkdir -p build
 #mkdir -p $@
 
-loading_bar: $(FOLDERS) $(OBJS)
+loading_bar_static: $(FOLDERS) $(OBJS)
 	$(CC) $(OBJS) $(LIBS) $(FLAGS) $(INCLUDE) -o build/loading_bar
 
+loading_bar_dynamic: $(FOLDERS) $(OBJS)
+	gcc -shared $(OBJS) -lgcov -o build/liblbar.so
+
 test:
-	$(CC) tests/test_bar.c src/loading_bar.c -lcmocka $(INCLUDE) -o build/test_bar
+	$(CC) tests/test_bar.c -lcmocka -Lbuild/ -llbar $(INCLUDE) -o build/test_bar
 	./build/test_bar
 
 clean:
