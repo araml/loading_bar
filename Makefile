@@ -18,7 +18,7 @@ BUILD = build
 all: loading_bar_dynamic
 #static: loading_bar_static
 dynamic: loading_bar_dynamic
-tests: loading_bar_dynamic test
+tests: loading_bar_dynamic compile_and_run_tests
 
 debug: FLAGS += -DDEBUG
 debug: loading_bar
@@ -36,7 +36,7 @@ loading_bar_static: $(FOLDERS) $(OBJS)
 loading_bar_dynamic: $(FOLDERS) $(OBJS)
 	gcc -shared $(OBJS) -lgcov -o build/liblbar.so
 
-test:
+compile_and_run_tests:
 	$(CC) tests/test_bar.c -lcmocka -Lbuild/ -llbar $(INCLUDE) -o build/test_bar
 	./build/test_bar
 
