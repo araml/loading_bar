@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <loading_bar.h>
 
 loading_bar *loading_bar_create(char loading_symbol, int width) {
@@ -10,9 +13,37 @@ loading_bar *loading_bar_create(char loading_symbol, int width) {
     bar->bar[width + 1] = ']';
     bar->bar[width + 2] = 0;
     bar->width = width;
-    bar->size = width + 2;
-
+    bar->size = width + 3;
+    bar->current_percentage = 0;
+    bar->display_percentage = false;
     return bar;
+}
+
+int display_percentage(loading_bar *b, int display_percentage) {
+    if (!b)
+        return LB_ERR;
+    if (!b->display_percentage && display_percentage) {
+        char *nb = (char *)realloc(b->bar, b->size + 5);
+        if (!nb) { // realloc err
+            return LB_ERR;
+        }
+        b->bar = nb;
+        sprintf(&b->bar[b->width + 2], " %d%%", b->current_percentage);
+        b->size += 5;
+        b->bar[b->size - 1] = 0;
+        b->display_percentage = display_percentage;
+    } else if (b->display_percentage && !display_percentage) {
+        char *nb = (char *)realloc(b->bar, b->size - 5);
+        b->bar = nb;
+        if (!nb) { // realloc err
+            return LB_ERR;
+        }
+        b->size -= 5;
+        b->bar[b->size - 1] = 0;
+        b->display_percentage = display_percentage;
+    }
+
+    return LB_OK;
 }
 
 static float clamp(float value, float low, float high) {
@@ -25,8 +56,9 @@ static float clamp(float value, float low, float high) {
 }
 
 void loading_bar_update(loading_bar *bar, float percentage) {
-    percentage = clamp(percentage, 0., 100.);
+    bar->current_percentage  = percentage = clamp(percentage, 0., 100.);
     int prctg = (percentage * (float)bar->width) / 100.;
+
 
     for (int i = 1; i <= bar->width; i++) {
         if (i <= prctg)

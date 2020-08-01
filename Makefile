@@ -37,7 +37,7 @@ loading_bar_dynamic: $(FOLDERS) $(OBJS)
 	gcc -shared $(OBJS) -lgcov -o build/liblbar.so
 
 compile_and_run_tests:
-	$(CC) tests/test_bar.c -lcmocka -Lbuild/ -llbar $(INCLUDE) -o build/test_bar
+	$(CC) tests/test_bar.c -lcmocka -Lbuild/ -llbar $(INCLUDE) -ggdb -o build/test_bar
 	./build/test_bar
 
 clean:

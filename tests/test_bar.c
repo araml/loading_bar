@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <setjmp.h>
 #include <cmocka.h>
+#include <stdbool.h>
 #include <loading_bar.h>
 
 #define cmp_str(s1, s2) { \
@@ -62,11 +63,31 @@ static void test_underflow_percentage(void **state) {
     loading_bar_destroy(b);
 }
 
+static void test_display_percentage(void **state) {
+    loading_bar *b = loading_bar_create('4', 20);
+    char cmp[] = "[44                  ]";
+    loading_bar_update(b, 10);
+
+    cmp_str(cmp, b->bar);
+    display_percentage(b, false);
+    cmp_str(cmp, b->bar);
+    char cmp2[] = "[44                  ] 10%";
+    display_percentage(b, true);
+    cmp_str(cmp2, b->bar);
+    display_percentage(b, false);
+    cmp_str(cmp, b->bar);
+
+    loading_bar_destroy(b);
+
+
+}
+
 int main() {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_create_destroy),
         cmocka_unit_test(test_overflow_percentage),
         cmocka_unit_test(test_underflow_percentage),
+        cmocka_unit_test(test_display_percentage),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
