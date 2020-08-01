@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <loading_bar.h>
 
-loading_bar *loading_bar_create(char loading_symbol, int width) {
+loading_bar *lb_create(char loading_symbol, int width) {
     loading_bar *bar = (loading_bar *) malloc(sizeof(loading_bar));
     bar->symbol = loading_symbol;
     bar->bar = (char *) malloc(width + 3);
@@ -19,7 +19,7 @@ loading_bar *loading_bar_create(char loading_symbol, int width) {
     return bar;
 }
 
-int display_percentage(loading_bar *b, int display_percentage) {
+int lb_display_percentage(loading_bar *b, int display_percentage) {
     if (!b)
         return LB_ERR;
     if (!b->display_percentage && display_percentage) {
@@ -55,7 +55,7 @@ static float clamp(float value, float low, float high) {
     return result;
 }
 
-void loading_bar_update(loading_bar *bar, float percentage) {
+void lb_update(loading_bar *bar, float percentage) {
     bar->current_percentage  = percentage = clamp(percentage, 0., 100.);
     int prctg = (percentage * (float)bar->width) / 100.;
 
@@ -68,7 +68,7 @@ void loading_bar_update(loading_bar *bar, float percentage) {
     }
 }
 
-void loading_bar_destroy(loading_bar *bar) {
+void lb_destroy(loading_bar *bar) {
     free(bar->bar);
     free(bar);
 }

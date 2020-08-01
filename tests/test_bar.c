@@ -12,40 +12,40 @@
 }
 
 static void test_create_destroy(void **state) {
-    loading_bar *b = loading_bar_create('#', 10);
+    loading_bar *b = lb_create('#', 10);
     const char cmp[] = "[          ]";
 
     cmp_str(cmp, b->bar);
 
-    loading_bar_destroy(b);
+    lb_destroy(b);
 }
 
 static void test_overflow_percentage(void **state) {
-    loading_bar *b = loading_bar_create('4', 20);
+    loading_bar *b = lb_create('4', 20);
     char cmp[] = "[44                  ]";
-    loading_bar_update(b, 10);
+    lb_update(b, 10);
 
     cmp_str(cmp, b->bar);
 
     // Overflow value bar should be filled like 100%
-    loading_bar_update(b, 100);
+    lb_update(b, 100);
     for (size_t i = 1; i <= 20; i++) {
         cmp[i] = '4';
     }
 
     cmp_str(cmp, b->bar);
-    loading_bar_destroy(b);
+    lb_destroy(b);
 }
 
 static void test_underflow_percentage(void **state) {
-    loading_bar *b = loading_bar_create('c', 20);
+    loading_bar *b = lb_create('c', 20);
     char cmp[] = "[cccc                ]";
-    loading_bar_update(b, 20);
+    lb_update(b, 20);
 
     cmp_str(cmp, b->bar);
 
     // Overflow value bar should be filled like 100%
-    loading_bar_update(b, 0);
+    lb_update(b, 0);
     for (size_t i = 1; i <= 20; i++) {
         cmp[i] = ' ';
     }
@@ -53,31 +53,31 @@ static void test_underflow_percentage(void **state) {
     cmp_str(cmp, b->bar);
 
     cmp[1] = cmp[2] = 'c';
-    loading_bar_update(b, 10);
+    lb_update(b, 10);
     cmp_str(cmp, b->bar);
 
     cmp[1] = cmp[2] = ' ';
-    loading_bar_update(b, -1000);
+    lb_update(b, -1000);
 
 
-    loading_bar_destroy(b);
+    lb_destroy(b);
 }
 
 static void test_display_percentage(void **state) {
-    loading_bar *b = loading_bar_create('4', 20);
+    loading_bar *b = lb_create('4', 20);
     char cmp[] = "[44                  ]";
-    loading_bar_update(b, 10);
+    lb_update(b, 10);
 
     cmp_str(cmp, b->bar);
-    display_percentage(b, false);
+    lb_display_percentage(b, false);
     cmp_str(cmp, b->bar);
     char cmp2[] = "[44                  ] 10%";
-    display_percentage(b, true);
+    lb_display_percentage(b, true);
     cmp_str(cmp2, b->bar);
-    display_percentage(b, false);
+    lb_display_percentage(b, false);
     cmp_str(cmp, b->bar);
 
-    loading_bar_destroy(b);
+    lb_destroy(b);
 
 
 }
