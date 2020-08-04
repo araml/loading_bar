@@ -4,10 +4,10 @@ Just a simple loading bar string generator
 
 ## Example
 ```cpp
-loading_bar *b = loading_bar_create('#', 10); // # symbol for the bar, 10 chars wide
-loading_bar_update(b, 40); // Update to 40%
+loading_bar *b = lb_create('#', 10); // # symbol for the bar, 10 chars wide
+lb_update(b, 40); // Update to 40%
 printf("%s\n", b->bar); // Outputs: [####      ]
-loading_bar_destroy(b); // clean up
+lb_destroy(b); // clean up
 ```
 
 ## Api
@@ -21,7 +21,18 @@ lb_update()
 lb_display_percentage()
 ```
 
-And ``loading_bar->bar`` to get the actual bar string.
+And ``loading_bar->bar`` to get a handle to the actual bar string (char *).
+
+## Compilation
+
+You have can compile this as a shared lib or statically
+
+```
+make all     # will build both targets
+make dynamic # and
+make static  # will build each version independently
+make tests   # Will build the dynamic version and run the tests
+```
 
 ## Unicode symbol support
 
